@@ -76,7 +76,7 @@ public class Order implements Serializable {
         // orderDate
         do {
             Date orderDate = Util.inputDate("Input order date", false);
-            if (/*Validation*/true) {
+            if (orderDate != null) {
                 setOrderDate(orderDate);
                 break;
             } else {
@@ -86,7 +86,7 @@ public class Order implements Serializable {
         // customerName
         do {
             String name = Util.inputString("Input customer's name", false);
-            if (/*Validation*/true) {
+            if (!name.isBlank()) {
                 setCustomerName(name);
                 break;
             } else {
@@ -94,27 +94,23 @@ public class Order implements Serializable {
             }
         } while (true);
         // orderDetail
-        String petId = null;
-        Category cate = null;
+        String petId = "";
+        String cateStr = "";
         do {
-            cate = new Pet().inputCategory(true);
+            cateStr = Util.inputString("Input Category", true);
+            Category cate = Category.valueOf(cateStr.trim().toUpperCase());
             petId = Util.inputString("Input pet's id", true);
             if (petId.isBlank()) {
                 break;
             }
             if (PetManagement.getInstance().getPetByID(petId, cate) != null) {
-                if (true /*Validation*/) {
-                    Pet pet = PetManagement.getInstance().getPetByID(petId, cate);
-                    int quantity = Util.inputInteger("Input order quantity", 0, Integer.MAX_VALUE);
-                    int cost = quantity * pet.getUnitPrice();
-                    this.orderDetailList.add(new OrderDetail(pet, quantity, cost));
-                } else {
-                    System.out.println("Error");
-                }
+                Pet pet = PetManagement.getInstance().getPetByID(petId, cate);
+                int quantity = Util.inputInteger("Input order quantity", 0, Integer.MAX_VALUE);
+                this.orderDetailList.add(new OrderDetail(pet, quantity));
             } else {
                 System.out.println("Pet not found.");
             }
-        } while (!petId.isBlank() || !(cate == null) || this.orderDetailList.isEmpty());
+        } while (!petId.isBlank() || !(cateStr.isBlank()) || this.orderDetailList.isEmpty());
     }
 
     public int getOrderTotal() {

@@ -2,10 +2,6 @@ package Model;
 
 import java.io.Serializable;
 
-/**
- *
- * @author DELL
- */
 public class OrderDetail implements Serializable{
 
     private Pet pet;
@@ -15,10 +11,10 @@ public class OrderDetail implements Serializable{
     public OrderDetail() {
     }
 
-    public OrderDetail(Pet pet, int quantity, double cost) {
+    public OrderDetail(Pet pet, int quantity) {
         this.pet = pet;
         this.quantity = quantity;
-        this.cost = cost;
+        this.cost = quantity*pet.getUnitPrice();
     }
 
     public Pet getPet() {
@@ -41,8 +37,8 @@ public class OrderDetail implements Serializable{
         return cost;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
+    public void setCost() {
+        this.cost = this.getQuantity()*pet.getUnitPrice();
     }
 
     @Override

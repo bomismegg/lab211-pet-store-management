@@ -27,18 +27,15 @@ public class PetStoreManagement {
                     break;
                 case PET_ADD:
                     petManagement.addPet();
-                    petManagement.saveToFile();
                     break;
                 case PET_SEARCH:
                     petManagement.searchPet();
                     break;
                 case PET_UPDATE:
                     petManagement.updatePet();
-                    petManagement.saveToFile();
                     break;
                 case PET_DELETE:
                     petManagement.deletePet();
-                    petManagement.saveToFile();
                     break;
                 case PET_SAVE_TO_FILE:
                     petManagement.saveToFile();
@@ -48,7 +45,6 @@ public class PetStoreManagement {
                     break;
                 case ORDER_ADD:
                     orderManagerment.addOrder();
-                    orderManagerment.saveToFile();
                     break;
                 case ORDER_LIST:
                     orderManagerment.listOrder();

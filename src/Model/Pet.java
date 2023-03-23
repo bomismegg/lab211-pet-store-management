@@ -13,6 +13,8 @@ public class Pet implements Serializable {
     private Date date;
     private int unitPrice;
     private Enum category;
+    
+    private final String ID_PATTERN = "[P]+\\d{5}";
 
     public Pet() {
     }
@@ -30,7 +32,9 @@ public class Pet implements Serializable {
     }
 
     public final void setId(String id) {
-        this.id = id;
+        if(id.matches(ID_PATTERN)){
+            this.id = id;
+        }
     }
 
     public String getDescription() {
@@ -38,9 +42,7 @@ public class Pet implements Serializable {
     }
 
     public final void setDescription(String description) {
-        if (description.length() >= 5 && description.length() <= 30) {
             this.description = description;
-        }
     }
 
     public Date getDate() {
@@ -64,19 +66,24 @@ public class Pet implements Serializable {
     }
 
     public void setCategory(Enum category) {
+
         this.category = category;
     }
 
-    public void input() {
-        while (true) {
-            try {
-                setId(Util.inputString("Enter pet ID", false).toUpperCase().trim());
+    public String inputId() {
+        String id = null;
+        do {
+            id = Util.inputString("Input Pet ID", false);
+            if (!id.matches(ID_PATTERN)) {
+                System.out.println("Error");
+            } else {
                 break;
-            } catch (Exception ex) {
-                Logger.getLogger(Pet.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        } while (true);
+        return id;
+    }
 
+    public void input() {
         while (true) {
             try {
                 setDescription(Util.inputString("Enter pet description", false).toUpperCase().trim());
@@ -107,7 +114,7 @@ public class Pet implements Serializable {
 
     public Category inputCategory(boolean allowEmpty) {
         Category category = null;
-        String cate="";
+        String cate = "";
         do {
             try {
                 cate = Util.inputString("Enter pet category", allowEmpty);

@@ -1,6 +1,7 @@
 package Services;
 
 import Model.Order;
+import Model.Pet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,14 +36,13 @@ public class OrderManagement implements Serializable {
         this.orderMap = new HashMap();
     }
 
-    public Order getOrderById(YearMonth yearMonth, String id) {
-        List<Order> orderList = orderMap.get(yearMonth);
-        for (Order ord : orderList) {
-            if (ord.getOrderId().equals(id)) {
-                return ord;
-            }
-        }
-        return null;
+    public List<Order> filterOrderByPet(Pet pet) {
+        return pet == null ? null
+                : this.orderMap.values().stream().flatMap(e -> e.stream()).filter(p -> pet.equals(p)).toList();
+    }
+
+    public List<Order> getOrderById(String id) {
+        return this.orderMap.values().stream().flatMap(e -> e.stream()).filter(p -> id.equals(p.getOrderId())).toList();
     }
 
     public void addOrder() {
@@ -60,9 +60,10 @@ public class OrderManagement implements Serializable {
             orderMap.put(yearMonth, orderList);
         }
 
-        if (getOrderById(yearMonth, orderID) == null) {
+        if (getOrderById(orderID).isEmpty()) {
             if (orderList.add(order)) {
                 order.setOrderId(orderID);
+                OrderManagement.getInstance().saveToFile();
             }
         } else {
             System.out.println("This order [" + orderID + "] already exists.");
@@ -93,7 +94,7 @@ public class OrderManagement implements Serializable {
             return;
         }
         int index = 1;
-        int total = 0;
+        int total = 0, count = 0;
         Formatter fmt = new Formatter();
         fmt.format("%4s %10s %15s %15s %15s %15s\n",
                 "No.",
@@ -111,13 +112,14 @@ public class OrderManagement implements Serializable {
                     ord.getOrderCount(),
                     "$ " + ord.getOrderTotal());
             total += ord.getOrderTotal();
+            count += ord.getOrderCount();
         }
         fmt.format("%4s %10s %15s %15s %15s %15s\n",
                 "",
                 "Total:",
                 "",
                 "",
-                "",
+                count,
                 "$ " + total);
         System.out.println(fmt);
     }

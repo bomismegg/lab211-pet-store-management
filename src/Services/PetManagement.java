@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import utils.Util;
 
-public class PetManagement implements Serializable{
+public class PetManagement implements Serializable {
 
     private static final PetManagement instance = new PetManagement();
 
@@ -63,9 +63,18 @@ public class PetManagement implements Serializable{
             petMap.put(cate, petList);
         }
         Pet pet = new Pet();
+        String id = pet.inputId();
+        for (Pet p : petList) {
+            if (p.getId().equalsIgnoreCase(id)) {
+                System.out.println("Duplicated Pet");
+                return;
+            }
+        }
         pet.input();
+        pet.setId(id);
         pet.setCategory(cate);
         petList.add(pet);
+        PetManagement.getInstance().saveToFile();
     }
 
     public void searchPet() {
@@ -88,6 +97,7 @@ public class PetManagement implements Serializable{
         } else {
             pet.update();
             System.out.println("Updated " + pet.getId());
+            PetManagement.getInstance().saveToFile();
         }
     }
 
@@ -99,16 +109,17 @@ public class PetManagement implements Serializable{
         if (pet == null) {
             System.out.println("Not found");
         } else {
-            if (false/*@TODO in order*/) {
+            if (OrderManagement.getInstance().filterOrderByPet(pet).isEmpty()) {
                 System.out.println(pet.getId() + " already in order, cannot delete");
             } else {
                 petList.remove(pet);
                 System.out.println("Removed " + pet.getId());
+                PetManagement.getInstance().saveToFile();
             }
         }
     }
 
-     public void saveToFile() {
+    public void saveToFile() {
         if (petMap.isEmpty()) {
             System.out.println("Nothing to write");
             return;
@@ -128,7 +139,7 @@ public class PetManagement implements Serializable{
         }
         System.out.println("Saved data to pet.dat");
     }
-    
+
     public void loadFromFile() {
         try {
             File f = new File("pet.dat");
